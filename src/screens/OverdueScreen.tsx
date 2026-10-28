@@ -86,19 +86,19 @@ export const OverdueScreen: React.FC<OverdueScreenProps> = ({ navigation }) => {
       {/* Dynamic Alert Banner */}
       {overdueTasks.length > 0 ? (
         <View style={styles.alertBannerWarning}>
-          <Text style={styles.alertIcon}>⚠️</Text>
+          <Text style={styles.alertIcon}>!</Text>
           <View style={styles.alertTextWrapper}>
             <Text style={styles.alertTitle}>
               Có {overdueTasks.length} công việc đã quá hạn!
             </Text>
             <Text style={styles.alertMessage}>
-              Vui lòng ưu tiên hoàn thành hoặc cập nhật lại hạn chót.
+              Vui lòng ưu tiên hoàn thành hoặc cập nhật lại thời hạn.
             </Text>
           </View>
         </View>
       ) : (
         <View style={styles.alertBannerSuccess}>
-          <Text style={styles.alertIcon}>🎉</Text>
+          <Text style={styles.alertIcon}>✓</Text>
           <View style={styles.alertTextWrapper}>
             <Text style={styles.alertSuccessTitle}>Không có công việc quá hạn</Text>
             <Text style={styles.alertSuccessMessage}>
@@ -125,7 +125,7 @@ export const OverdueScreen: React.FC<OverdueScreenProps> = ({ navigation }) => {
               activeTab === 'OVERDUE' && styles.segmentTextActiveOverdue,
             ]}
           >
-            🚨 Đã quá hạn ({overdueTasks.length})
+            Đã quá hạn ({overdueTasks.length})
           </Text>
         </Pressable>
 
@@ -144,7 +144,7 @@ export const OverdueScreen: React.FC<OverdueScreenProps> = ({ navigation }) => {
               activeTab === 'UPCOMING' && styles.segmentTextActiveUpcoming,
             ]}
           >
-            ⏰ Sắp tới hạn ({upcomingTasks.length})
+            Sắp tới hạn ({upcomingTasks.length})
           </Text>
         </Pressable>
       </View>

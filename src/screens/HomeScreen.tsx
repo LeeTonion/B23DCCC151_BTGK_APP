@@ -6,7 +6,6 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Alert,
   StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +16,7 @@ import { FilterBar } from '../components/FilterBar';
 import { SortBar } from '../components/SortBar';
 import { TaskCard } from '../components/TaskCard';
 import { EmptyState } from '../components/EmptyState';
+import { NotificationPanel } from '../components/NotificationPanel';
 import { Colors, Spacing, Typography } from '../theme';
 import { isTaskOverdue, parseDate } from '../utils/dateUtils';
 
@@ -32,30 +32,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filter, setFilter] = useState<FilterStatus>('ALL');
   const [sort, setSort] = useState<SortOption>('DUE_DATE');
-
-  // Notification button handler
-  const handleOpenNotification = () => {
-    const overdueMsg =
-      stats.overdue > 0
-        ? `⚠️ ${stats.overdue} công việc đã quá hạn cần xử lý gấp!\n`
-        : '🎉 Không có công việc nào bị quá hạn.\n';
-
-    Alert.alert(
-      '🔔 Thông báo công việc',
-      `${overdueMsg}📋 Đang làm: ${stats.active} việc\n✅ Đã hoàn thành: ${stats.completed}/${stats.total} việc (${stats.progressPercentage}%)`,
-      [
-        ...(stats.overdue > 0
-          ? [
-              {
-                text: 'Xem việc quá hạn',
-                onPress: () => navigation.navigate('MainTabs' as never),
-              },
-            ]
-          : []),
-        { text: 'Đóng', style: 'cancel' },
-      ]
-    );
-  };
+  const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
 
   // Filter, search, and sort simultaneously
   const filteredAndSortedTasks = useMemo(() => {
@@ -81,7 +58,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       result.sort((a, b) => {
         const dateA = parseDate(a.dueDate)?.getTime() || 0;
         const dateB = parseDate(b.dueDate)?.getTime() || 0;
-        return dateA - dateB; // Closest / earliest deadline first
+        return dateA - dateB;
       });
     } else if (sort === 'PRIORITY') {
       const priorityWeight: Record<string, number> = {
@@ -92,7 +69,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       result.sort((a, b) => {
         const weightA = priorityWeight[a.priority] || 0;
         const weightB = priorityWeight[b.priority] || 0;
-        return weightB - weightA; // Cao -> Thấp
+        return weightB - weightA;
       });
     }
 
@@ -121,11 +98,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <Text style={styles.headerTitle}>Kế Hoạch Của Tôi</Text>
         </View>
 
-        {/* Notification Bell Button (Thay nút thêm mới ở góc phải) */}
+        {/* Minimalist Notification Bell Button */}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Thông báo công việc"
-          onPress={handleOpenNotification}
+          accessibilityLabel="Thông báo công việc quá hạn"
+          onPress={() => setIsNotificationOpen(true)}
           style={({ pressed }) => [styles.btnNotify, pressed && styles.btnNotifyPressed]}
         >
           <Text style={styles.btnNotifyIcon}>🔔</Text>
@@ -142,7 +119,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       {/* Minimalist Search Input */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBox}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Text style={styles.searchIcon}>⌕</Text>
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -201,9 +178,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 ? 'Tuyệt vời! Không có công việc nào bị quá hạn.'
                 : 'Danh sách trống. Nhấn nút "+" ở thanh menu dưới để thêm công việc mới!'
             }
-            icon={searchQuery ? '🔎' : filter === 'OVERDUE' ? '🎉' : '📋'}
+            icon={searchQuery ? '⌕' : filter === 'OVERDUE' ? '✓' : '—'}
           />
         }
+      />
+
+      {/* Notification Panel (chỉ thông báo task quá hạn) */}
+      <NotificationPanel
+        visible={isNotificationOpen}
+        tasks={tasks}
+        onClose={() => setIsNotificationOpen(false)}
+        onSelectTask={(taskId) => {
+          navigation.navigate('Detail', { taskId });
+        }}
+        onToggleDone={toggleTaskDone}
       />
     </SafeAreaView>
   );
@@ -227,7 +215,7 @@ const styles = StyleSheet.create({
   },
   headerSub: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '500',
     color: Colors.textSecondary,
     marginBottom: 2,
   },
@@ -236,9 +224,9 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   btnNotify: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: Colors.card,
     alignItems: 'center',
     justifyContent: 'center',
@@ -247,29 +235,29 @@ const styles = StyleSheet.create({
     position: 'relative',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
   },
   btnNotifyPressed: {
-    transform: [{ scale: 0.92 }],
+    transform: [{ scale: 0.94 }],
     backgroundColor: Colors.surfaceSubtle,
   },
   btnNotifyIcon: {
-    fontSize: 18,
+    fontSize: 16,
   },
   notifyBadge: {
     position: 'absolute',
     top: -2,
     right: -2,
     backgroundColor: Colors.error,
-    borderRadius: 9,
-    minWidth: 18,
-    height: 18,
-    paddingHorizontal: 4,
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    paddingHorizontal: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: Colors.card,
   },
   notifyBadgeText: {
@@ -286,15 +274,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.card,
-    borderRadius: 12,
+    borderRadius: 10,
     paddingHorizontal: Spacing.md,
     borderWidth: 1,
     borderColor: Colors.border,
-    height: 42,
+    height: 40,
   },
   searchIcon: {
-    fontSize: 14,
+    fontSize: 16,
+    color: Colors.textMuted,
     marginRight: Spacing.xs,
+    marginTop: -2,
   },
   searchInput: {
     flex: 1,
@@ -303,7 +293,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   clearSearch: {
-    fontSize: 14,
+    fontSize: 13,
     color: Colors.textMuted,
     padding: 4,
   },

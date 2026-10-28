@@ -134,7 +134,7 @@ export const SettingsScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* App Preferences Settings */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>⚙️ Tuỳ chọn ứng dụng</Text>
+          <Text style={styles.cardTitle}>Tuỳ chọn ứng dụng</Text>
 
           <View style={styles.settingItem}>
             <View style={styles.settingTextContainer}>
@@ -191,7 +191,7 @@ export const SettingsScreen: React.FC = () => {
 
         {/* User Profile Card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>👤 Thông tin người dùng</Text>
+          <Text style={styles.cardTitle}>Thông tin người dùng</Text>
           <Text style={styles.cardSubtitle}>
             Thông tin cá nhân hoá và ghi nhớ trên thiết bị này.
           </Text>
@@ -220,14 +220,14 @@ export const SettingsScreen: React.FC = () => {
             style={({ pressed }) => [styles.btnSave, pressed && styles.btnPressed]}
           >
             <Text style={styles.btnSaveText}>
-              {isSaved ? '✓ Đã lưu thành công' : '💾 Lưu thông tin'}
+              {isSaved ? '✓ Đã lưu thành công' : 'Lưu thông tin'}
             </Text>
           </Pressable>
         </View>
 
         {/* Data Management Card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>🗄️ Quản lý dữ liệu</Text>
+          <Text style={styles.cardTitle}>Quản lý dữ liệu</Text>
           <Text style={styles.cardSubtitle}>
             Các thao tác đồng bộ và sao lưu dữ liệu trong máy.
           </Text>
@@ -237,7 +237,7 @@ export const SettingsScreen: React.FC = () => {
             onPress={handleResetSampleTasks}
             style={({ pressed }) => [styles.btnSecondary, pressed && styles.btnPressed]}
           >
-            <Text style={styles.btnSecondaryText}>🔄 Khôi phục dữ liệu mẫu</Text>
+            <Text style={styles.btnSecondaryText}>Khôi phục dữ liệu mẫu</Text>
           </Pressable>
 
           <Pressable
@@ -245,13 +245,13 @@ export const SettingsScreen: React.FC = () => {
             onPress={handleClearAllTasks}
             style={({ pressed }) => [styles.btnDanger, pressed && styles.btnPressed]}
           >
-            <Text style={styles.btnDangerText}>⚠️ Xoá toàn bộ dữ liệu ứng dụng</Text>
+            <Text style={styles.btnDangerText}>Xoá toàn bộ dữ liệu</Text>
           </Pressable>
         </View>
 
         {/* About Card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>ℹ️ Thông tin ứng dụng</Text>
+          <Text style={styles.cardTitle}>Thông tin ứng dụng</Text>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Tên ứng dụng:</Text>
             <Text style={styles.infoValue}>Quản Lý Kế Hoạch Cá Nhân</Text>

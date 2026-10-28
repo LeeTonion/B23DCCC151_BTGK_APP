@@ -27,7 +27,7 @@ export const SortBar: React.FC<SortBarProps> = ({ currentSort, onToggleSort }) =
               currentSort === 'DUE_DATE' && styles.btnTextActive,
             ]}
           >
-            📅 Hạn gần nhất
+            Hạn gần nhất
           </Text>
         </Pressable>
 
@@ -45,7 +45,7 @@ export const SortBar: React.FC<SortBarProps> = ({ currentSort, onToggleSort }) =
               currentSort === 'PRIORITY' && styles.btnTextActive,
             ]}
           >
-            ⚡ Ưu tiên (Cao → Thấp)
+            Mức ưu tiên
           </Text>
         </Pressable>
       </View>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     color: Colors.textSecondary,
     marginRight: Spacing.sm,
   },
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   sortBtn: {
     paddingVertical: 5,
-    paddingHorizontal: Spacing.sm + 2,
+    paddingHorizontal: Spacing.sm + 4,
     borderRadius: 8,
     backgroundColor: Colors.surfaceSubtle,
     borderWidth: 1,

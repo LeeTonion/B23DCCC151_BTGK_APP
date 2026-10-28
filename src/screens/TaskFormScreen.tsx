@@ -16,6 +16,7 @@ import { useTasks } from '../context/TaskContext';
 import { Category, Priority, RootStackParamList } from '../types/task';
 import { Colors, PriorityColors, CategoryColors, Spacing, Typography } from '../theme';
 import { validateDueDate, getRelativeDateString } from '../utils/dateUtils';
+import { SuccessModal } from '../components/SuccessModal';
 
 type TaskFormScreenProps = NativeStackScreenProps<RootStackParamList, 'TaskForm'>;
 
@@ -42,6 +43,10 @@ export const TaskFormScreen: React.FC<TaskFormScreenProps> = ({
   // Validation error states
   const [titleError, setTitleError] = useState<string | null>(null);
   const [dueDateError, setDueDateError] = useState<string | null>(null);
+
+  // Success modal state
+  const [savedTask, setSavedTask] = useState<Partial<Task> | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
   // Validate title on change
   const handleTitleChange = (text: string) => {
@@ -106,18 +111,20 @@ export const TaskFormScreen: React.FC<TaskFormScreenProps> = ({
           dueDate: dueDate.trim(),
         });
         Alert.alert('Thành công', 'Đã cập nhật công việc!');
+        navigation.goBack();
       } else {
-        await addTask({
+        const newTaskData = {
           title: trimmedTitle,
           note: note.trim() || undefined,
           category,
           priority,
           dueDate: dueDate.trim(),
           done: false,
-        });
-        Alert.alert('Thành công', 'Đã thêm công việc mới!');
+        };
+        await addTask(newTaskData);
+        setSavedTask(newTaskData);
+        setShowSuccessModal(true);
       }
-      navigation.goBack();
     } catch (error) {
       Alert.alert('Lỗi', 'Không thể lưu công việc. Vui lòng thử lại.');
     }
@@ -211,13 +218,7 @@ export const TaskFormScreen: React.FC<TaskFormScreenProps> = ({
                         isSelected && styles.chipTextSelected,
                       ]}
                     >
-                      {cat === 'Học tập'
-                        ? '📚 Học tập'
-                        : cat === 'Công việc'
-                        ? '💼 Công việc'
-                        : cat === 'Sức khoẻ'
-                        ? '🏃 Sức khoẻ'
-                        : '👤 Cá nhân'}
+                      {cat}
                     </Text>
                   </Pressable>
                 );
@@ -367,6 +368,24 @@ export const TaskFormScreen: React.FC<TaskFormScreenProps> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Success Modal Panel */}
+      <SuccessModal
+        visible={showSuccessModal}
+        task={savedTask}
+        onGoBack={() => {
+          setShowSuccessModal(false);
+          navigation.goBack();
+        }}
+        onAddAnother={() => {
+          setShowSuccessModal(false);
+          setTitle('');
+          setNote('');
+          setDueDate(getRelativeDateString(1));
+          setTitleError(null);
+          setDueDateError(null);
+        }}
+      />
     </SafeAreaView>
   );
 };

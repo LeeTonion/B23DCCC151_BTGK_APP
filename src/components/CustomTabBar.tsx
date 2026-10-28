@@ -7,15 +7,14 @@ import { useTasks } from '../context/TaskContext';
 
 interface TabMeta {
   label: string;
-  icon: string;
 }
 
 const TAB_META: Record<string, TabMeta> = {
-  TasksTab: { label: 'Công việc', icon: '📋' },
-  OverdueTab: { label: 'Quá hạn', icon: '⏰' },
-  AddPlaceholder: { label: 'Thêm', icon: '➕' },
-  StatsTab: { label: 'Thống kê', icon: '📊' },
-  SettingsTab: { label: 'Cài đặt', icon: '⚙️' },
+  TasksTab: { label: 'Công việc' },
+  OverdueTab: { label: 'Quá hạn' },
+  AddPlaceholder: { label: 'Thêm' },
+  StatsTab: { label: 'Thống kê' },
+  SettingsTab: { label: 'Cài đặt' },
 };
 
 export const CustomTabBar: React.FC<BottomTabBarProps> = ({
@@ -26,20 +25,57 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
   const insets = useSafeAreaInsets();
   const { stats } = useTasks();
 
+  const renderTabIcon = (name: string, isFocused: boolean) => {
+    const color = isFocused ? Colors.primary : Colors.textMuted;
+
+    switch (name) {
+      case 'TasksTab':
+        return (
+          <View style={styles.iconTasks}>
+            <View style={[styles.taskLine, { backgroundColor: color, width: 14 }]} />
+            <View style={[styles.taskLine, { backgroundColor: color, width: 18 }]} />
+            <View style={[styles.taskLine, { backgroundColor: color, width: 12 }]} />
+          </View>
+        );
+
+      case 'OverdueTab':
+        return (
+          <View style={[styles.iconOverdueCircle, { borderColor: color }]}>
+            <Text style={[styles.iconOverdueText, { color }]}>!</Text>
+          </View>
+        );
+
+      case 'StatsTab':
+        return (
+          <View style={styles.iconStats}>
+            <View style={[styles.statBar, { height: 7, backgroundColor: color }]} />
+            <View style={[styles.statBar, { height: 16, backgroundColor: color }]} />
+            <View style={[styles.statBar, { height: 11, backgroundColor: color }]} />
+          </View>
+        );
+
+      case 'SettingsTab':
+        return <Text style={[styles.iconGear, { color }]}>⚙</Text>;
+
+      default:
+        return <Text style={[styles.iconGear, { color }]}>•</Text>;
+    }
+  };
+
   return (
     <View
       style={[
         styles.container,
         {
           paddingBottom: Math.max(insets.bottom, 8),
-          height: 60 + Math.max(insets.bottom, 8),
+          height: 58 + Math.max(insets.bottom, 8),
         },
       ]}
     >
       <View style={styles.tabBarInner}>
         {state.routes.map((route, index) => {
           const isCenter = route.name === 'AddPlaceholder';
-          const meta = TAB_META[route.name] || { label: route.name, icon: '📌' };
+          const meta = TAB_META[route.name] || { label: route.name };
 
           if (isCenter) {
             return (
@@ -48,7 +84,6 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
                   accessibilityRole="button"
                   accessibilityLabel="Thêm công việc mới"
                   onPress={() => {
-                    // Navigate to the Root Stack TaskForm screen
                     navigation.navigate('TaskForm' as never);
                   }}
                   style={({ pressed }) => [
@@ -56,7 +91,7 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
                     pressed && styles.centerButtonPressed,
                   ]}
                 >
-                  <Text style={styles.centerButtonIcon}>＋</Text>
+                  <Text style={styles.centerButtonIcon}>+</Text>
                 </Pressable>
                 <Text style={styles.centerButtonLabel}>Thêm</Text>
               </View>
@@ -99,14 +134,7 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({
               ]}
             >
               <View style={styles.iconContainer}>
-                <Text
-                  style={[
-                    styles.tabIcon,
-                    isFocused && styles.tabIconActive,
-                  ]}
-                >
-                  {meta.icon}
-                </Text>
+                {renderTabIcon(route.name, isFocused)}
 
                 {/* Overdue Badge if overdue > 0 */}
                 {route.name === 'OverdueTab' && stats.overdue > 0 && (
@@ -143,7 +171,7 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.border,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 8,
   },
@@ -169,19 +197,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 28,
-    height: 24,
+    height: 22,
   },
-  tabIcon: {
-    fontSize: 20,
-    opacity: 0.65,
+  // Minimalist Tasks Icon (3 clean horizontal lines)
+  iconTasks: {
+    width: 18,
+    height: 14,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
-  tabIconActive: {
-    opacity: 1,
-    transform: [{ scale: 1.08 }],
+  taskLine: {
+    height: 2,
+    borderRadius: 1,
+  },
+  // Minimalist Overdue Icon (thin circle with exclamation mark)
+  iconOverdueCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconOverdueText: {
+    fontSize: 11,
+    fontWeight: '800',
+    marginTop: -1,
+  },
+  // Minimalist Stats Icon (3 vertical bars)
+  iconStats: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: 16,
+    gap: 3,
+  },
+  statBar: {
+    width: 3.5,
+    borderRadius: 1,
+  },
+  // Minimalist Settings Icon
+  iconGear: {
+    fontSize: 17,
   },
   tabLabel: {
-    fontSize: 11,
-    marginTop: 2,
+    fontSize: 10,
+    marginTop: 3,
     fontWeight: '500',
   },
   tabLabelActive: {
@@ -194,9 +254,9 @@ const styles = StyleSheet.create({
   activeIndicator: {
     position: 'absolute',
     bottom: -2,
-    width: 14,
-    height: 3,
-    borderRadius: 2,
+    width: 12,
+    height: 2.5,
+    borderRadius: 1.5,
     backgroundColor: Colors.primary,
   },
   centerButtonWrapper: {
@@ -206,18 +266,18 @@ const styles = StyleSheet.create({
     marginTop: -16,
   },
   centerButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 7,
-    borderWidth: 3,
+    elevation: 6,
+    borderWidth: 2.5,
     borderColor: Colors.card,
   },
   centerButtonPressed: {
@@ -225,8 +285,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryDark,
   },
   centerButtonIcon: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '600',
     color: Colors.textInverse,
     marginTop: -2,
   },

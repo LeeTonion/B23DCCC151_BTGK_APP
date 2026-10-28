@@ -138,7 +138,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
           <View style={styles.dueDateBadge}>
             <Text style={[styles.dueDateText, isOverdue && styles.dueDateTextOverdue]}>
-              📅 {task.dueDate}
+              {task.dueDate}
             </Text>
           </View>
         </View>

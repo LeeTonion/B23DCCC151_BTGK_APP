@@ -138,34 +138,30 @@ export const StatsScreen: React.FC = () => {
         {/* 4 Summary Stat Boxes */}
         <View style={styles.statsGrid}>
           <View style={[styles.statBox, { borderColor: Colors.primaryLight }]}>
-            <Text style={styles.statBoxIcon}>📋</Text>
             <Text style={styles.statBoxNumber}>{stats.total}</Text>
             <Text style={styles.statBoxLabel}>Tổng việc</Text>
           </View>
 
           <View style={[styles.statBox, { borderColor: Colors.infoBorder }]}>
-            <Text style={styles.statBoxIcon}>⏳</Text>
             <Text style={[styles.statBoxNumber, { color: Colors.info }]}>{stats.active}</Text>
             <Text style={styles.statBoxLabel}>Đang làm</Text>
           </View>
 
           <View style={[styles.statBox, { borderColor: Colors.successBorder }]}>
-            <Text style={styles.statBoxIcon}>✅</Text>
             <Text style={[styles.statBoxNumber, { color: Colors.success }]}>{stats.completed}</Text>
             <Text style={styles.statBoxLabel}>Đã xong</Text>
           </View>
 
           <View style={[styles.statBox, { borderColor: Colors.errorBorder }]}>
-            <Text style={styles.statBoxIcon}>🚨</Text>
             <Text style={[styles.statBoxNumber, { color: Colors.error }]}>{stats.overdue}</Text>
             <Text style={styles.statBoxLabel}>Quá hạn</Text>
           </View>
         </View>
 
-        {/* 📊 BIỂU ĐỒ CỘT 1: Phân bổ theo Danh mục */}
+        {/* BIỂU ĐỒ CỘT 1: Phân bổ theo Danh mục */}
         <View style={styles.chartCard}>
           <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>📊 Biểu đồ cột theo Danh mục</Text>
+            <Text style={styles.chartTitle}>Biểu đồ theo Danh mục</Text>
             <Text style={styles.chartSub}>Số lượng công việc</Text>
           </View>
 
@@ -221,18 +217,8 @@ export const StatsScreen: React.FC = () => {
             {/* Labels Row below baseline */}
             <View style={styles.labelsRow}>
               {(['Học tập', 'Công việc', 'Sức khoẻ', 'Cá nhân'] as Category[]).map((cat) => {
-                const icon =
-                  cat === 'Học tập'
-                    ? '📚'
-                    : cat === 'Công việc'
-                    ? '💼'
-                    : cat === 'Sức khoẻ'
-                    ? '🏃'
-                    : '👤';
-
                 return (
                   <View key={cat} style={styles.labelCol}>
-                    <Text style={styles.labelIcon}>{icon}</Text>
                     <Text numberOfLines={1} style={styles.labelText}>
                       {cat}
                     </Text>
@@ -263,10 +249,10 @@ export const StatsScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* 📊 BIỂU ĐỒ CỘT 2: Phân bổ theo Mức độ ưu tiên */}
+        {/* BIỂU ĐỒ CỘT 2: Phân bổ theo Mức độ ưu tiên */}
         <View style={styles.chartCard}>
           <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>🎯 Biểu đồ cột theo Mức độ ưu tiên</Text>
+            <Text style={styles.chartTitle}>Biểu đồ theo Mức độ ưu tiên</Text>
             <Text style={styles.chartSub}>Cao • Trung bình • Thấp</Text>
           </View>
 
@@ -330,7 +316,7 @@ export const StatsScreen: React.FC = () => {
 
         {/* Action: Clear completed tasks */}
         <View style={styles.actionCard}>
-          <Text style={styles.actionCardTitle}>🧹 Dọn dẹp công việc</Text>
+          <Text style={styles.actionCardTitle}>Dọn dẹp công việc</Text>
           <Text style={styles.actionCardDesc}>
             Xoá tất cả các công việc đã hoàn thành để giữ không gian làm việc gọn gàng.
           </Text>
@@ -352,7 +338,7 @@ export const StatsScreen: React.FC = () => {
                 stats.completed === 0 && styles.btnBatchDeleteTextDisabled,
               ]}
             >
-              🗑️ Xoá {stats.completed} việc đã hoàn thành
+              Xoá {stats.completed} việc đã hoàn thành
             </Text>
           </Pressable>
         </View>
